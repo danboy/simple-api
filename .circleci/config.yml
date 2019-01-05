@@ -1,0 +1,65 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    working_directory: ~/crowd-api
+    docker:
+      - image: circleci/node:8.10
+        environment:
+          NODE_ENV: development
+          SECRET: abcd1234ass
+          ALGO: RS256
+          TOKEN_EXP: "2 days"
+          ISS: localhost:8080
+          ISSUER: theCrowd
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: password
+          DB_NAME: thecrowd_test
+          DB_DIALECT: postgres
+          PRIVATE_KEY: "-----BEGIN RSA PRIVATE KEY-----\nMIIBOQIBAAJBAKsE5vJY4ecvMZ7UQ1R/4Yv0ybP33kfZJf4AtlqIG6kgpjVYy31i\nbItvOnRQyW2lGUzaZdxy/l3BV0vuO2xLoI8CAwEAAQJAcJpOsb0CKOTzB//8wRNe\nX3dyo1OOAMKieEbhymQZylYH1wC6zwV0iMv7QiaHfDnHTaALzKuW/OoU7paCDOSm\nYQIhAN940iDu9cr4OCLN0TtJesZTDX/21Ot3/BDbFj85ZDy/AiEAw+mLqygye14F\nHAQa3k4ExfE7R0uGvJ2uuFmIHCrkADECIEBD/7Hm5pqjPYmMxPIW1I76TXSSaHL7\nA2tZhhFSkOgDAiATy59fNfqT2JYvlIKaf8ufrJZOx+TfXhdvbSyBnBvZoQIgMqm5\nNMY2gAtNaoqSvQvDo5asFnxw8sE8ipLUcLoLNsI=\n-----END RSA PRIVATE KEY-----"
+          PUBLIC_KEY: "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKsE5vJY4ecvMZ7UQ1R/4Yv0ybP33kfZ\nJf4AtlqIG6kgpjVYy31ibItvOnRQyW2lGUzaZdxy/l3BV0vuO2xLoI8CAwEAAQ==\n-----END PUBLIC KEY-----"
+          PG_PASS: iB44tg69DA6Pi2al
+          TWILIO_KEY: 3scb52DTcoSUNHPTOsRfAWXpT1LIe17o
+          TRANSLOADIT_AUTH_KEY: 4cfbde0a45a04d82988951c372ec3211
+          TRANSLOADIT_AUTH_SECRET: 4d8594cb55c26a0495f093765756ea9363a1e5f8
+          TRANSLOADIT_TEMPLATE_ID: c19e3670ec4511e8bec9c1b42bb45427
+          APP_BASE_URL: 'http://example.com'
+      - image: circleci/postgres:9.6.11-postgis-ram
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: thecrowd_test
+    steps:
+      - checkout
+      - restore_cache: # restore the dependency cache for faster `npm install`
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: 'Install NPM dependencies'
+          command: npm install
+      - save_cache: # save the updated dependency cache
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+          - ./node_modules
+      - run:
+          name: 'Resetting to an empty/fresh database'
+          command: 'npm run reset:noseeds'
+      - run: # run tests
+          name: 'Running tests'
+          command: 'npm run test'
+      - run: # run tests
+          name: 'Running feature tests'
+          command: 'npm run features'
+      - store_artifacts: # special step to save test results as as artifact
+          path: test-results.xml
+          prefix: tests
+      - store_artifacts:
+          path: coverage
+          prefix: coverage
+      - store_test_results: # special step to upload test results for display in Test Summary
+          path: test-results.xml
+
+

@@ -1,0 +1,8 @@
+{
+	"errors": {
+		"authentication": "Authentication failed. Incorrect user or password.",
+		"unauthorized": "unauthorized",
+		"bad_request": "request is valid, but not allowed on this resource.",
+		"unsupported_media": "Media type not supported. Verify the request headers have been set properly ('application/json' required for API)."
+	}
+}
