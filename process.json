@@ -1,0 +1,11 @@
+{
+  "name": "bc-api",
+  "watch": "true",
+  "exec-mode": "cluster",
+  "env": {
+    "PORT": 3003,
+    "NODE_ENV": "development"
+  },
+  "script": "npm",
+  "args": "start"
+}
