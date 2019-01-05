@@ -9,14 +9,14 @@
  *
  * Returns piece of middleware ready to be injected into router.
  */
-function defaultLocaleInfo ({ locale, countryCode }) {
+function defaultLocaleInfo({ locale, countryCode }) {
   return (req, res, next) => {
     if (req.body && !(req.body.countryCode && req.body.locale)) {
-      req.body.locale = locale
-      req.body.countryCode = countryCode
+      req.body.locale = locale;
+      req.body.countryCode = countryCode;
     }
-    next()
-  }
+    next();
+  };
 }
 
-module.exports = defaultLocaleInfo
+module.exports = defaultLocaleInfo;

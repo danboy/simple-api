@@ -1,17 +1,22 @@
-function requireActorRole (role) {
+function requireActorRole(role) {
   return (req, res, next) => {
-    let actor = res.locals.actor
+    let actor = res.locals.actor;
 
     if (hasRole(actor, role)) {
-      next()
+      next();
     } else {
-      return res.status(401).send({ message: res.__('errors.unauthorized') })
+      return res.status(401).send({ message: res.__("errors.unauthorized") });
     }
-  }
+  };
 }
 
-function hasRole (actor = {}, role) {
-  return actor.roles && actor.roles.find(r => { return r.slug === role })
+function hasRole(actor = {}, role) {
+  return (
+    actor.roles &&
+    actor.roles.find(r => {
+      return r.slug === role;
+    })
+  );
 }
 
-module.exports = requireActorRole
+module.exports = requireActorRole;

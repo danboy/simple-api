@@ -1,18 +1,18 @@
-const UsersController = require('./users')
-const RolesController = require('./roles')
-const RoleAssignmentsController = require('./role_assignments')
+const UsersController = require("./users");
+const RolesController = require("./roles");
+const RoleAssignmentsController = require("./role_assignments");
 
-function init () {
+function init() {
   return {
     Users: new UsersController(),
     Roles: new RolesController(),
-    RoleAssignments: new RoleAssignmentsController(),
-  }
+    RoleAssignments: new RoleAssignmentsController()
+  };
 }
 
 module.exports = {
   init,
   UsersController,
   RolesController,
-  RoleAssignmentsController,
-}
+  RoleAssignmentsController
+};

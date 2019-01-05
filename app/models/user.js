@@ -1,13 +1,13 @@
-const alphaNumeric = require('faker').random.alphaNumeric
-const crypto = require('bcrypt')
+const alphaNumeric = require("faker").random.alphaNumeric;
+const crypto = require("bcrypt");
 const userStates = {
-  ACTIVE: 'active',
-  CREATED: 'created'
-}
+  ACTIVE: "active",
+  CREATED: "created"
+};
 
 const User = (sequelize, DataTypes) => {
   const model = sequelize.define(
-    'User',
+    "User",
     {
       id: {
         type: DataTypes.UUID,
@@ -29,7 +29,7 @@ const User = (sequelize, DataTypes) => {
       },
       phone: {
         type: DataTypes.STRING(30),
-        not: ['[a-z]', 'i'],
+        not: ["[a-z]", "i"],
         unique: true,
         allowNull: true
       },
@@ -46,50 +46,52 @@ const User = (sequelize, DataTypes) => {
       }
     },
     {
-      tableName: 'users'
+      tableName: "users"
     }
-  )
+  );
 
   model.beforeValidate((media, options) => {
-    media.slug = alphaNumeric(10)
+    media.slug = alphaNumeric(10);
 
-    return media
-  })
+    return media;
+  });
 
-  model.associate = function (models) {
+  model.associate = function(models) {
     model.belongsToMany(models.Role, {
-      as: 'roles',
+      as: "roles",
       through: {
         model: models.RoleAssignment,
         attributes: []
       },
-      foreignKey: 'user_id',
+      foreignKey: "user_id",
       constraints: false
-    })
-  }
+    });
+  };
 
-  model.prototype.authenticate = function (candidatePassword, cb) {
-    crypto.compare(candidatePassword, this.password, function (err, isMatch) {
-      if (err) return cb(err)
-      return cb(null, isMatch)
-    })
-  }
+  model.prototype.authenticate = function(candidatePassword, cb) {
+    crypto.compare(candidatePassword, this.password, function(err, isMatch) {
+      if (err) return cb(err);
+      return cb(null, isMatch);
+    });
+  };
 
-  model.activateWithPhone = function (phoneNumber) {
-    return model.update({
-      status: userStates.ACTIVE
-    },
-    { where: { phone: phoneNumber } })
-  }
+  model.activateWithPhone = function(phoneNumber) {
+    return model.update(
+      {
+        status: userStates.ACTIVE
+      },
+      { where: { phone: phoneNumber } }
+    );
+  };
 
   // TODO: This is not correct anymore. We need some unit tests around
   // this and the idea of "user states".
   model.beforeSave((user, options) => {
-    const salt = crypto.genSaltSync(10)
-    user.password = crypto.hashSync(user.password, salt)
-  })
+    const salt = crypto.genSaltSync(10);
+    user.password = crypto.hashSync(user.password, salt);
+  });
 
-  return model
-}
+  return model;
+};
 
-module.exports = User
+module.exports = User;
