@@ -1,4 +1,4 @@
-# The Crowd Auth Service
+# Api boilerplate
 
 ## Requirements
 
