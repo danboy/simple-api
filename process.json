@@ -1,9 +1,9 @@
 {
-  "name": "bc-api",
-  "watch": "true",
+  "name": "simple-api",
+  "watch": "./",
   "exec-mode": "cluster",
   "env": {
-    "PORT": 3003,
+    "PORT": 3045,
     "NODE_ENV": "development"
   },
   "script": "npm",

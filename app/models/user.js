@@ -24,7 +24,9 @@ const User = (sequelize, DataTypes) => {
       },
       email: {
         type: DataTypes.STRING(120),
-        isEmail: true,
+        validate: {
+          isEmail: true
+        },
         unique: true
       },
       phone: {
@@ -52,7 +54,6 @@ const User = (sequelize, DataTypes) => {
 
   model.beforeValidate((media, options) => {
     media.slug = alphaNumeric(10);
-
     return media;
   });
 
@@ -87,6 +88,7 @@ const User = (sequelize, DataTypes) => {
   // TODO: This is not correct anymore. We need some unit tests around
   // this and the idea of "user states".
   model.beforeSave((user, options) => {
+    if (!user.password) return;
     const salt = crypto.genSaltSync(10);
     user.password = crypto.hashSync(user.password, salt);
   });

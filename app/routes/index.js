@@ -4,9 +4,7 @@ const { defineEndpoints: defineAdminEndpoints } = require("./admin");
 const {
   defineEndpoints: defineUnauthenticatedEndpoints
 } = require("./unauthenticated");
-const {
-  defineEndpoints: defineStandardUserEndpoints
-} = require("./standard_user");
+const { defineEndpoints: defineStandardUserEndpoints } = require("./user");
 
 let unauthenticatedRouter = defineUnauthenticatedEndpoints({ mw, ctrlrs });
 let adminRouter = defineAdminEndpoints({ mw, ctrlrs });

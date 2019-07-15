@@ -1,58 +1,80 @@
-if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
-var express = require('express')
-var path = require('path')
-var logger = require('morgan')
-var cookieParser = require('cookie-parser')
-var bodyParser = require('body-parser')
-const i18n = require('i18n')
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+var express = require("express");
+var path = require("path");
+var logger = require("./node_modules/lib_events");
+var cookieParser = require("cookie-parser");
+var bodyParser = require("body-parser");
+const i18n = require("i18n");
 
-var { standardUserRouter, adminRouter, unauthenticatedRouter } = require('./app/routes')
+var {
+  standardUserRouter,
+  adminRouter,
+  unauthenticatedRouter
+} = require("./app/routes");
 
-var app = express()
+var app = express();
 
 i18n.configure({
-  locales: ['en'],
-  directory: path.join(__dirname, 'config/locales'),
+  locales: ["en"],
+  directory: path.join(__dirname, "config/locales"),
   objectNotation: true
-})
+});
 
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-  res.header('Access-Control-Allow-Credentials', 'true')
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200)
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+  if (req.method === "OPTIONS") {
+    res.sendStatus(200);
   }
-  next()
-})
+  next();
+});
 
-app.use(i18n.init)
-app.use(logger('dev', { skip: () => { return process.env.NODE_ENV === 'test' } }))
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(cookieParser())
+app.use(i18n.init);
 
-app.use('/', unauthenticatedRouter.core())
-app.use('/', standardUserRouter.core())
-app.use('/admin', adminRouter.core())
+const lg = new logger({
+  label: `API[${process.env.NODE_ENV}]${
+    process.env.ECS_CONTAINER_METADATA_URI
+      ? "(" + process.env.ECS_CONTAINER_METADATA_URI + ")"
+      : ""
+  }`
+});
+app.use(
+  require("morgan")("combined", { stream: { write: lg.write.bind(lg) } })
+);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+app.use("/", unauthenticatedRouter.core());
+app.use("/", standardUserRouter.core());
+app.use("/admin", adminRouter.core());
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  var err = new Error('Not Found')
-  err.status = 404
-  next(err)
-})
+app.use(function(req, res, next) {
+  var err = new Error("Not Found");
+  err.status = 404;
+  next(err);
+});
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
-  res.status(err.status || 500)
-  res.json({ error: err })
-})
+  res.status(err.status || 500);
+  res.json({ error: err });
+});
 
-module.exports = app
+module.exports = app;

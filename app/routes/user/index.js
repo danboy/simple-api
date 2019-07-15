@@ -1,5 +1,5 @@
-const Auth = require("../services/auth");
-const DecoratedRouter = require("../lib/decorated_router");
+const Auth = require("../../services/auth");
+const DecoratedRouter = require("../../lib/decorated_router");
 
 function defineEndpoints({ mw, ctrlrs }) {
   let router = new DecoratedRouter();
