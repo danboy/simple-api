@@ -3,7 +3,7 @@
   "watch": "./",
   "exec-mode": "cluster",
   "env": {
-    "PORT": 3045,
+    "PORT": 3099,
     "NODE_ENV": "development"
   },
   "script": "npm",

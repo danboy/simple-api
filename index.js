@@ -3,7 +3,6 @@ if (process.env.NODE_ENV !== "production") {
 }
 var express = require("express");
 var path = require("path");
-var logger = require("./node_modules/lib_events");
 var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
 const i18n = require("i18n");
@@ -41,16 +40,7 @@ app.use(function(req, res, next) {
 
 app.use(i18n.init);
 
-const lg = new logger({
-  label: `API[${process.env.NODE_ENV}]${
-    process.env.ECS_CONTAINER_METADATA_URI
-      ? "(" + process.env.ECS_CONTAINER_METADATA_URI + ")"
-      : ""
-  }`
-});
-app.use(
-  require("morgan")("combined", { stream: { write: lg.write.bind(lg) } })
-);
+app.use(require("morgan")("combined", { stream: { write: console.log } }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
