@@ -20,9 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     { tableName: "products" }
   );
 
-  model.associate = function(models) {
+  Product.associate = function(models) {
     models.Product.belongsToMany(models.File, {
       as: "assets",
+      through: "file_assignments",
       scope: {
         actor_id: "file"
       },
@@ -30,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  model.prototype.isAdmin = function() {
+  Product.prototype.isAdmin = function() {
     return this.slug === "admin";
   };
 

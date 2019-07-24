@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         type: DataTypes.STRING(20)
       },
-      actor_type: DtataTypes.STRING(50),
+      actor_type: DataTypes.STRING(50),
       description: DataTypes.STRING(1023),
       actor_id: DataTypes.UUID,
       details: DataTypes.JSON
@@ -21,11 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     { tableName: "products" }
   );
 
-  model.associate = function(models) {
+  File.associate = function(models) {
     models.File.belongsToMany(models.Product, {
       as: "assets",
+      through: "file_assignments",
       scope: {
-        actor_id: "file"
+        actor_id: "file_id"
       },
       foreignKey: "actor_id"
     });
